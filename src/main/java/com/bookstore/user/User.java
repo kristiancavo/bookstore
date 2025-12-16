@@ -18,7 +18,7 @@ public class User {
     private String email;
 
     @Column(nullable=false)
-    private String password;  // bcrypt hashed
+    private String password;
 
     private boolean active = true;
 
@@ -31,6 +31,10 @@ public class User {
     private Set<Role> roles = new HashSet<>();
 
     public Long getId() { return id; }
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
 
     public String getFullName() { return fullName; }
     public void setFullName(String fullName) { this.fullName = fullName; }
