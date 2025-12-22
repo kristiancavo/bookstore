@@ -1,5 +1,7 @@
 package com.bookstore.book;
 
+import com.bookstore.category.Category;
+import com.bookstore.category.CategoryRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -8,58 +10,71 @@ import java.util.List;
 public class BookService {
 
     private final BookRepository bookRepository;
+    private final CategoryRepository categoryRepository;
 
-    public BookService(BookRepository bookRepository) {
+    public BookService(BookRepository bookRepository,
+                       CategoryRepository categoryRepository) {
         this.bookRepository = bookRepository;
+        this.categoryRepository = categoryRepository;
     }
 
-    public List<Book> getAll() {
-        return bookRepository.findAll();
-    }
-
-    public Book getById(Long id) {
-        return bookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Book not found"));
-    }
 
     public Book create(BookRequest request) {
+
+        if (request.getCategoryId() == null) {
+            throw new RuntimeException("Category ID is required");
+        }
+
+        Category category = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+
         Book book = new Book();
-        applyRequestToBook(request, book);
-        return bookRepository.save(book);
-    }
-
-    public Book update(Long id, BookRequest request) {
-        Book book = getById(id);
-        applyRequestToBook(request, book);
-        return bookRepository.save(book);
-    }
-
-    public void delete(Long id) {
-        Book book = getById(id);
-        bookRepository.delete(book);
-    }
-
-    public List<Book> search(String title, String author, String category) {
-        if (title != null && !title.isBlank()) {
-            return bookRepository.findByTitleContainingIgnoreCase(title);
-        }
-        if (author != null && !author.isBlank()) {
-            return bookRepository.findByAuthorContainingIgnoreCase(author);
-        }
-        if (category != null && !category.isBlank()) {
-            return bookRepository.findByCategoryContainingIgnoreCase(category);
-        }
-        return bookRepository.findAll();
-    }
-
-    private void applyRequestToBook(BookRequest request, Book book) {
         book.setTitle(request.getTitle());
         book.setAuthor(request.getAuthor());
         book.setIsbn(request.getIsbn());
-        book.setCategory(request.getCategory());
         book.setPublishedYear(request.getPublishedYear());
         book.setPrice(request.getPrice());
         book.setStockQuantity(request.getStockQuantity());
         book.setDescription(request.getDescription());
+        book.setCategory(category);
+
+        return bookRepository.save(book);
+    }
+
+
+    public List<Book> findAll() {
+        return bookRepository.findAll();
+    }
+
+
+    public Book findById(Long id) {
+        return bookRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Book not found"));
+    }
+
+
+    public List<Book> search(String title, String author, Long categoryId) {
+
+        if (categoryId != null) {
+            return bookRepository.findByCategoryId(categoryId);
+        }
+
+        if (title != null && author != null) {
+            return bookRepository
+                    .findByTitleContainingIgnoreCaseAndAuthorContainingIgnoreCase(
+                            title, author);
+        }
+
+        if (title != null) {
+            return bookRepository.findByTitleContainingIgnoreCase(title);
+        }
+
+        if (author != null) {
+            return bookRepository.findByAuthorContainingIgnoreCase(author);
+        }
+
+        return bookRepository.findAll();
     }
 }
+
+

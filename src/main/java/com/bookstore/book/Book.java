@@ -1,5 +1,6 @@
 package com.bookstore.book;
 
+import com.bookstore.category.Category;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 
@@ -20,7 +21,10 @@ public class Book {
     @Column(unique = true)
     private String isbn;
 
-    private String category;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
 
     private Integer publishedYear;
 
@@ -41,39 +45,72 @@ public class Book {
         return id;
     }
 
-    public void setId(Long id) { this.id = id; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) { this.title = title; }
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-    public String getAuthor() { return author; }
+    public String getAuthor() {
+        return author;
+    }
 
-    public void setAuthor(String author) { this.author = author; }
+    public void setAuthor(String author) {
+        this.author = author;
+    }
 
-    public String getIsbn() { return isbn; }
+    public String getIsbn() {
+        return isbn;
+    }
 
-    public void setIsbn(String isbn) { this.isbn = isbn; }
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
+    }
 
-    public String getCategory() { return category; }
+    public Category getCategory() {
+        return category;
+    }
 
-    public void setCategory(String category) { this.category = category; }
+    public void setCategory(Category category) {
+        this.category = category;
+    }
 
-    public Integer getPublishedYear() { return publishedYear; }
+    public Integer getPublishedYear() {
+        return publishedYear;
+    }
 
-    public void setPublishedYear(Integer publishedYear) { this.publishedYear = publishedYear; }
+    public void setPublishedYear(Integer publishedYear) {
+        this.publishedYear = publishedYear;
+    }
 
-    public BigDecimal getPrice() { return price; }
+    public BigDecimal getPrice() {
+        return price;
+    }
 
-    public void setPrice(BigDecimal price) { this.price = price; }
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
 
-    public Integer getStockQuantity() { return stockQuantity; }
+    public Integer getStockQuantity() {
+        return stockQuantity;
+    }
 
-    public void setStockQuantity(Integer stockQuantity) { this.stockQuantity = stockQuantity; }
+    public void setStockQuantity(Integer stockQuantity) {
+        this.stockQuantity = stockQuantity;
+    }
 
-    public String getDescription() { return description; }
+    public String getDescription() {
+        return description;
+    }
 
-    public void setDescription(String description) { this.description = description; }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }
+

@@ -1,7 +1,5 @@
 package com.bookstore.book;
 
-
-
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,23 +18,24 @@ public class BookController {
 
     @GetMapping
     public List<Book> getAll() {
-        return bookService.getAll();
+        return bookService.findAll();
     }
+
 
     @GetMapping("/{id}")
     public Book getById(@PathVariable Long id) {
-        return bookService.getById(id);
+        return bookService.findById(id);
     }
+
 
     @GetMapping("/search")
     public List<Book> search(
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String author,
-            @RequestParam(required = false) String category
+            @RequestParam(required = false) Long categoryId
     ) {
-        return bookService.search(title, author, category);
+        return bookService.search(title, author, categoryId);
     }
-
 
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -44,17 +43,7 @@ public class BookController {
     public Book create(@RequestBody BookRequest request) {
         return bookService.create(request);
     }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/{id}")
-    public Book update(@PathVariable Long id,
-                       @RequestBody BookRequest request) {
-        return bookService.update(id, request);
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
-        bookService.delete(id);
-    }
 }
+
+
+
