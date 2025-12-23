@@ -2,6 +2,7 @@ package com.bookstore.book;
 
 import com.bookstore.category.Category;
 import jakarta.persistence.*;
+
 import java.math.BigDecimal;
 
 @Entity
@@ -18,12 +19,11 @@ public class Book {
     @Column(nullable = false)
     private String author;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String isbn;
 
-
-    @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "category_id")
     private Category category;
 
     private Integer publishedYear;
@@ -31,7 +31,11 @@ public class Book {
     @Column(precision = 10, scale = 2)
     private BigDecimal price;
 
+    @Column(nullable = false)
     private Integer stockQuantity;
+
+    @Column(nullable = false)
+    private Integer minStockLevel;
 
     @Column(length = 2000)
     private String description;
@@ -39,14 +43,8 @@ public class Book {
     public Book() {
     }
 
-
-
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getTitle() {
@@ -105,6 +103,14 @@ public class Book {
         this.stockQuantity = stockQuantity;
     }
 
+    public Integer getMinStockLevel() {
+        return minStockLevel;
+    }
+
+    public void setMinStockLevel(Integer minStockLevel) {
+        this.minStockLevel = minStockLevel;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -113,4 +119,3 @@ public class Book {
         this.description = description;
     }
 }
-

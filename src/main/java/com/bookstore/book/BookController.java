@@ -1,6 +1,7 @@
 package com.bookstore.book;
 
-import org.springframework.security.access.prepost.PreAuthorize;
+import com.bookstore.stock.StockUpdateRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,35 +16,27 @@ public class BookController {
         this.bookService = bookService;
     }
 
-
     @GetMapping
-    public List<Book> getAll() {
-        return bookService.findAll();
+    public ResponseEntity<List<Book>> getAllBooks() {
+        return ResponseEntity.ok(bookService.findAll());
     }
 
-
-    @GetMapping("/{id}")
-    public Book getById(@PathVariable Long id) {
-        return bookService.findById(id);
+    @GetMapping("/low-stock")
+    public ResponseEntity<List<Book>> getLowStockBooks() {
+        return ResponseEntity.ok(bookService.findLowStockBooks());
     }
 
+    @PutMapping("/{id}/stock")
+    public ResponseEntity<Book> updateBookStock(
+            @PathVariable Long id,
+            @RequestBody StockUpdateRequest request) {
 
-    @GetMapping("/search")
-    public List<Book> search(
-            @RequestParam(required = false) String title,
-            @RequestParam(required = false) String author,
-            @RequestParam(required = false) Long categoryId
-    ) {
-        return bookService.search(title, author, categoryId);
-    }
-
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping
-    public Book create(@RequestBody BookRequest request) {
-        return bookService.create(request);
+        return ResponseEntity.ok(
+                bookService.updateStock(id, request.getChange(), request.getReason())
+        );
     }
 }
+
 
 
 
